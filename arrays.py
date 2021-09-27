@@ -51,7 +51,7 @@ class Array(object):
             self.items.pop()
 
     def insert(self, k, new_item):
-        if self.size() == len(self):
+        if self.size() == len(self) - 1:
             self.grow()
         if k > self.size():
             self.items[self.size()] = new_item
@@ -66,7 +66,7 @@ class Array(object):
         return self.insert(self.size(), new_item)
 
     def pop(self, k):
-        if k < 0 or k > self.size():
+        if k < 0 or k >= self.size():
             raise IndexError(f"Array pop index {index} out of range.")
         data = self.items[k]
         for ind in range(k, self.size()):
