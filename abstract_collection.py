@@ -14,7 +14,7 @@ class AbstractCollection(object):
             for item in source_collection:
                 self.add(item)
 
-    # Accessor methods
+    # Accessors
     def is_empty(self):
         """
         Returns True if len(self) == 0,
