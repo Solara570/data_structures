@@ -234,7 +234,7 @@ class LinkedPriorityQueue(LinkedQueue):
         else:
             # Search for a position for the new item
             probe = self.front
-            while new_item >= probe.data:
+            while probe is not None and new_item >= probe.data:
                 trailer = probe
                 probe = probe.next
             # The new item should be added before probe
