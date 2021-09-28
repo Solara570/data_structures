@@ -212,3 +212,35 @@ class ArrayQueue(AbstractCollection):
                 self.items[ind] = self.items[ind + 1]
             self.rear = (self.rear + len(self.items) - 1) % len(self.items)
         self.size -= 1
+
+
+class LinkedPriorityQueue(LinkedQueue):
+    """
+    A priority queue implementation based on linked list.
+    Inherent most methods from LinkedQueue.
+    """
+
+    def __init__(self, source_collection=None):
+        LinkedQueue.__init__(self, source_collection)
+
+    def add(self, new_item):
+        """
+        Inserts a new item based on its priority.
+        Note: A has a greater priority than B if A < B.
+        """
+        if self.is_empty() or new_item > self.rear.data:
+            # Least priority - add to the back
+            LinkedQueue.add(self, new_item)
+        else:
+            # Search for a position for the new item
+            probe = self.front
+            while new_item >= probe.data:
+                trailer = probe
+                probe = probe.next
+            # The new item should be added before probe
+            new_node = Node(new_item, probe)
+            if probe == self.front:
+                self.front = new_node
+            else:
+                trailer.next = new_node
+            self.size += 1
