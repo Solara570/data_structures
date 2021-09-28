@@ -228,13 +228,13 @@ class LinkedPriorityQueue(LinkedQueue):
         Inserts a new item based on its priority.
         Note: A has a greater priority than B if A < B.
         """
-        if self.is_empty() or new_item > self.rear.data:
+        if self.is_empty() or new_item >= self.rear.data:
             # Least priority - add to the back
             LinkedQueue.add(self, new_item)
         else:
             # Search for a position for the new item
             probe = self.front
-            while probe is not None and new_item >= probe.data:
+            while new_item >= probe.data:
                 trailer = probe
                 probe = probe.next
             # The new item should be added before probe
