@@ -24,6 +24,7 @@ class ArrayListIterator(object):
 
     def last(self):
         """
+        Resets the cursor to the end of the backing store.
         """
         self.cursor = len(self.backing_store)
         self.last_item_pos = -1
@@ -82,7 +83,7 @@ class ArrayListIterator(object):
             raise AttributeError("The current position is undefined.")
         if self.mod_count != self.backing_store.get_mod_count():
             raise AttributeError("Illegal modification of the backing store.")
-        self.backing_store[self.cursor] = item
+        self.backing_store[self.last_item_pos] = item
         self.last_item_pos = -1
 
     def insert(self, item):
@@ -100,7 +101,7 @@ class ArrayListIterator(object):
         self.last_item_pos = -1
         self.mod_count += 1
 
-    def remove(self, item):
+    def remove(self):
         """
         Preconditions: the current position is defined.
         The list hasn't been modified except by this iterator's mutators.
@@ -113,7 +114,7 @@ class ArrayListIterator(object):
             raise AttributeError("Illegal modification of the backing store.")
         self.backing_store.pop(self.last_item_pos)
         # If the item removed was obtained via next, move cursor back.
-        if self.last_item_pos > self.cursor:
+        if self.last_item_pos < self.cursor:
             self.cursor -= 1
         self.last_item_pos = -1
         self.mod_count += 1

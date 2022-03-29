@@ -73,11 +73,3 @@ class ArrayList(AbstractList):
         Returns a list iterator.
         """
         return ArrayListIterator(self)
-
-
-if __name__ == '__main__':
-    t = [1, 2, 3, 4, 6]
-    ls = ArrayList(t)
-    print(ls)
-    ls.insert(1, 3)
-    print(ls)
