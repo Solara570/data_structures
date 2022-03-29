@@ -1,4 +1,6 @@
 from nodes import Node, TwoWayNode
+from abstract_list import AbstractList
+from linked_list_iterator import LinkedListIterator
 
 
 class LinkedList(object):
@@ -157,3 +159,85 @@ class TwoWayLinkedList(LinkedList):
     # Many methods need to be rewrite though...
     def get_tail(self):
         return self.tail
+
+
+# Linked List in Chapter 9
+class AltLinkedList(AbstractList):
+    """
+    A link-based list implementation.
+    """
+
+    # Constructor
+    def __init__(self, source_collection=None):
+        """
+        Sets the initial state of self, which includes the
+        contents of source_collection, if it's present.
+        """
+        # Uses a circular structure with a sentinel node `head`.
+        self.head = TwoWayNode(None)
+        self.head.prev = self.head.next = self.head
+        super().__init__(source_collection)
+
+    # Accessors
+    def __iter__(self):
+        cursor = self.head.next
+        while cursor != self.head:
+            yield cursor.data
+            cursor = cursor.next
+
+    def get_node(self, i):
+        """
+        Helper method: returns node at position i
+        Doesn't check the index though.
+        """
+        if i == len(self):
+            return self.head
+        if i == len(self) - 1:
+            return self.head.prev
+        probe = self.head.next
+        while i > 0:
+            probe = probe.next
+            i -= 1
+        return probe
+
+    def __getitem__(self, i):
+        """
+        Preconditions: 0 <= i <= len(self)-1
+        Returns the item at position i.
+        Raises: IndexError if i is out of bound.
+        """
+        if i < 0 or i >= len(self):
+            raise IndexError("List index out of range.")
+        return self.get_node(i).data
+
+    # Mutators
+    def __setitem__(self, i, item):
+        """
+        Preconditions: 0 <= i <= len(self)-1
+        Replaces the item at position i.
+        Raises: IndexError if i is out of bound.
+        """
+        if i < 0 or i >= len(self):
+            raise IndexError("List index out of range.")
+        self.get_node(i).data = item
+
+    def insert(self, i, data):
+        """
+        Inserts the item at position i.
+        """
+        if i < 0:
+            i = 0
+        elif i > len(self):
+            i = len(self)
+        curr_node = self.get_node(i)
+        new_node = TwoWayNode(data, prev=curr_node.prev, next=curr_node)
+        curr_node.prev.next = new_node
+        curr_node.prev = new_node
+        self.size += 1
+        self.inc_mod_count()
+
+    def list_iterator(self):
+        """
+        Returns a list iterator.
+        """
+        return LinkedListIterator(self)
