@@ -1,9 +1,9 @@
 from abstract_collection import AbstractCollection
 
 
-class ArrayListIterator(object):
+class ArraySortedListIterator(object):
     """
-    Represents the list iterator for an array list.
+    Represents the list iterator for an array sorted list.
     """
 
     def __init__(self, backing_store):
@@ -72,6 +72,31 @@ class ArrayListIterator(object):
         return self.backing_store[self.last_item_pos]
 
     # Mutators
+    def remove(self):
+        """
+        Preconditions: the current position is defined.
+        The list hasn't been modified except by this iterator's mutators.
+        Removes the item at the current position.
+        Raises: AttributeError if the current position is undefined.
+        """
+        if self.last_item_pos == -1:
+            raise AttributeError("The current position is undefined.")
+        if self.mod_count != self.backing_store.get_mod_count():
+            raise AttributeError("Illegal modification of the backing store.")
+        self.backing_store.pop(self.last_item_pos)
+        # If the item removed was obtained via next, move cursor back.
+        if self.last_item_pos < self.cursor:
+            self.cursor -= 1
+        self.last_item_pos = -1
+        self.mod_count += 1
+
+
+class ArrayListIterator(ArraySortedListIterator):
+    """
+    Represents the list iterator for an array list.
+    """
+
+    # Mutators
     def replace(self, item):
         """
         Preconditions: the current position is defined.
@@ -98,23 +123,5 @@ class ArrayListIterator(object):
             self.backing_store.add(item)
         else:
             self.backing_store.insert(self.last_item_pos, item)
-        self.last_item_pos = -1
-        self.mod_count += 1
-
-    def remove(self):
-        """
-        Preconditions: the current position is defined.
-        The list hasn't been modified except by this iterator's mutators.
-        Removes the item at the current position.
-        Raises: AttributeError if the current position is undefined.
-        """
-        if self.last_item_pos == -1:
-            raise AttributeError("The current position is undefined.")
-        if self.mod_count != self.backing_store.get_mod_count():
-            raise AttributeError("Illegal modification of the backing store.")
-        self.backing_store.pop(self.last_item_pos)
-        # If the item removed was obtained via next, move cursor back.
-        if self.last_item_pos < self.cursor:
-            self.cursor -= 1
         self.last_item_pos = -1
         self.mod_count += 1
