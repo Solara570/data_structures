@@ -8,7 +8,16 @@ class Node(object):
         return class_name + "(" + str(self.data) + ")"
 
     def __repr__(self):
-        return str(self)
+        """
+        Returns the string representation of a non-empty lisp list.
+        """
+        def build_string(lyst):
+            s = ""
+            while lyst is not None:
+                s += str(lyst.data) + " "
+                lyst = lyst.next
+            return s.strip()
+        return "(" + build_string(self) + ")"
 
 
 class TwoWayNode(Node):
