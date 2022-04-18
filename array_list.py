@@ -132,7 +132,7 @@ class ArrayList(ArraySortedList):
         Sets the initial state of self, which includes the
         contents of source_collection, if it's present.
         """
-        ArraySortedList.__init__(source_collection)
+        ArraySortedList.__init__(self, source_collection)
 
     # Accessors
     def index(self, item):
