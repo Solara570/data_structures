@@ -24,3 +24,10 @@ class TwoWayNode(Node):
     def __init__(self, data, prev=None, next=None):
         Node.__init__(self, data, next=next)
         self.prev = prev
+
+
+class BSTNode(object):
+    def __init__(self, data, left=None, right=None):
+        self.data = data
+        self.left = left
+        self.right = right
