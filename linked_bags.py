@@ -1,5 +1,6 @@
 from abstract_bag import AbstractBag
 from nodes import Node
+from linked_bst import LinkedBST
 
 
 class LinkedBag(AbstractBag):
@@ -94,30 +95,80 @@ class LinkedBag(AbstractBag):
             self.prev_pointer.next = self.curr_pointer.next
         self.size -= 1
 
-    # def remove(self, item):
-    #     """
-    #     Remove an item from self.
-    #     Raise KeyError if item is not in self.
-    #     """
-    #     # (1) Special case 1: The bag is empty
-    #     if self.is_empty():
-    #         raise KeyError(f"{item} not in bag.")
-    #     # (2) Special case 2: the first element is the one to be removed
-    #     if self.items.data == item:
-    #         self.items = self.items.next
-    #         self.size -= 1
-    #         return
-    #     # (3) Traverse the whole bag to try to find the item.
-    #     prev = self.items
-    #     item_found = False
-    #     while prev.next is not None:
-    #         if prev.next.data == item:
-    #             item_found = True
-    #             break
-    #         prev = prev.next
-    #     # (4) Raise KeyError if item is not in self.
-    #     if not item_found:
-    #         raise KeyError(f"{item} not in bag.")
-    #     # (5) Remove the item by setting the pointers before this node
-    #     prev.next = prev.next.next
-    #     self.size -= 1
+
+class TreeSortedBag(AbstractBag):
+    """
+    A bag implementation based on linked BST.
+    """
+
+    # Constructor
+    def __init__(self, source_collection=None):
+        """
+        Sets the initial state of self, which includes the
+        contents of source_collection, if it's present.
+        Rebalance the bag if it's not balanced.
+        """
+        self.items = LinkedBST()
+        AbstractBag.__init__(self, source_collection)
+        if not self.items.is_balanced():
+            self.items.rebalance()
+
+    # Accessor methods
+    def __iter__(self):
+        """
+        Supports iteration over a view of self using inorder traversal.
+        """
+        return self.items.inorder()
+
+    def __contains__(self, item):
+        return (item in self.items)
+
+    def __eq__(self, other):
+        """
+        Returns true if the contents in self equals the contents in other,
+        or False otherwise.
+        """
+        if type(self) != type(other):
+            return False
+        if len(self) != len(other):
+            return False
+        for item in other:
+            if self.count(item) != other.count(item):
+                return False
+        return True
+
+    def count(self, item):
+        """
+        Returns the number of instances of item in self.
+        """
+        total = 0
+        for bag_item in self:
+            if item == bag_item:
+                total += 1
+        return total
+
+    # Mutator methods
+    def clear(self):
+        """
+        Void self.
+        """
+        self.size = 0
+        self.items.clear()
+
+    def add(self, item):
+        """
+        Add an item to self.
+        """
+        self.items.add(item)
+        self.size += 1
+
+    def remove(self, item):
+        """
+        Remove an item from self.
+        Raise KeyError if item is not in self.
+        """
+        if not item in self:
+            raise KeyError(str(item) + " not in bag")
+        # If it's the first to be removed
+        self.items.remove(item)
+        self.size -= 1
