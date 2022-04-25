@@ -318,18 +318,3 @@ class LinkedBST(AbstractCollection):
             return new_node
 
         self.root = setup_tree(data_list)
-
-
-if __name__ == '__main__':
-    import random
-    random.seed(30)
-    num_list = random.sample(list(range(1, 101)), 20)
-    tree = LinkedBST(num_list)
-    print(tree)
-    print("Height =", tree.height())
-    print("Is balanced:", tree.is_balanced())
-    print("Predecessor of 28 =", tree.predecessor(28))
-    print("Predecessor of 0 =", tree.predecessor(0))
-    print("Successor of 28 =", tree.successor(28))
-    print("Successor of 127 =", tree.successor(127))
-    print("Range find (10, 50) =", tree.range_find(10, 50))
