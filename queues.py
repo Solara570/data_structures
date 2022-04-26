@@ -1,5 +1,6 @@
 from arrays import Array
 from nodes import Node
+from heaps import ArrayHeap
 from abstract_collection import AbstractCollection
 
 
@@ -244,3 +245,60 @@ class LinkedPriorityQueue(LinkedQueue):
             else:
                 trailer.next = new_node
             self.size += 1
+
+
+class HeapPriorityQueue(AbstractCollection):
+    """
+    A priority queue implementation based on heap.
+    """
+    pass
+    # Constructor
+    def __init__(self, source_collection=None):
+        self.clear()
+        AbstractCollection.__init__(self, source_collection)
+
+    # Accessors
+    def __iter__(self):
+        """
+        Supports iteration over a view of self.
+        Visits items from front to rear of the queue.
+        """
+        return iter(self.heap)
+
+    def peek(self):
+        """
+        Returns the item at the top of the heap.
+        Precondition: The heap is not empty.
+        Raises KeyError if the heap is empty.
+        """
+        if self.is_empty():
+            raise KeyError("The heap is empty.")
+        return self.heap[0]
+
+    # Mutators
+    def clear(self):
+        """
+        Makes self become empty.
+        """
+        self.heap = ArrayHeap()
+        self.size = 0
+
+    def add(self, new_item):
+        """
+        Inserts a new item based on its priority.
+        Note: A has a greater priority than B if A < B.
+        """
+        self.heap.add(new_item)
+        self.size += 1
+
+    def pop(self):
+        """
+        Removes and returns the item at the front of the heap.
+        Precondition: the heap is not empty.
+        Raises KeyError if the heap is empty.
+        """
+        if self.is_empty():
+            raise KeyError("The heap is empty.")
+        top = self.heap.pop()
+        self.size -= 1
+        return top
