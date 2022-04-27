@@ -236,6 +236,22 @@ class AltLinkedList(AbstractList):
         self.size += 1
         self.inc_mod_count()
 
+    def pop(self, i):
+        """
+        Returns and removes the item at position i.
+        """
+        if i < 0:
+            i = 0
+        elif i > len(self):
+            i = len(self)
+        node = self.get_node(i)
+        data = node.data
+        node.prev.next = node.next
+        node.next.prev = node.prev
+        self.size -= 1
+        self.inc_mod_count()
+        return data
+
     def list_iterator(self):
         """
         Returns a list iterator.
