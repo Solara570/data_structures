@@ -1,11 +1,17 @@
+from abstract_set import AbstractSet
 from array_bags import ArrayBag
 
 
-class ArraySet(ArrayBag):
+class ArraySet(AbstractSet, ArrayBag):
     """
     A set implementation based on Array.
     Inherent most methods from ArrayBag.
+    Inherent set-specific methods from AbstractSet.
     """
+
+    # Constructor
+    def __init__(self, source_collection=None):
+        ArrayBag.__init__(self, source_collection)
 
     # Accessor methods
     def count(self, item):
@@ -18,10 +24,7 @@ class ArraySet(ArrayBag):
         """
         # Grow if the array is full
         if item not in self:
-            if len(self) == len(self.items):
-                self.items.grow()
-            self.items[len(self)] = item
-            self.size += 1
+            ArrayBag.add(self, item)
 
 
 class ArraySortedSet(ArraySet):
@@ -29,6 +32,10 @@ class ArraySortedSet(ArraySet):
     A sorted set implementation based on Array.
     Inherent most methods from ArraySet.
     """
+
+    # Constructor
+    def __init__(self, source_collection=None):
+        ArraySet.__init__(self, source_collection)
 
     # Accessor methods
     def __contains__(self, item):

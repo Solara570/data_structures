@@ -1,44 +1,53 @@
+from abstract_set import AbstractSet
 from nodes import Node
 from linked_bags import LinkedBag, TreeSortedBag
 
 
-class LinkedSet(LinkedBag):
+class LinkedSet(AbstractSet, LinkedBag):
     """
     A set implementation based on linked list.
     Inherent most methods from LinkedBag.
+    Inherent set-specific methods from AbstractSet.
     """
-    # Accessor methods
 
+    # Constructor
+    def __init__(self, source_collection=None):
+        LinkedBag.__init__(self, source_collection)
+
+    # Accessor methods
     def count(self, item):
         return 1 if item in self else 0
-    # Mutator methods
 
+    # Mutator methods
     def add(self, item):
         """
         Add an item to self.
         """
         # Grow if the array is full
         if item not in self:
-            self.items = Node(item, self.items)
-            self.size += 1
+            LinkedBag.add(self, item)
 
 
-class TreeSortedSet(TreeSortedBag):
+class TreeSortedSet(AbstractSet, TreeSortedBag):
     """
     A set implementation based on linked BST.
     Inherent most methods from TreeSortedBag.
+    Inherent set-specific methods from AbstractSet.
     """
-    # Accessor methods
 
+    # Constructor
+    def __init__(self, source_collection=None):
+        TreeSortedBag.__init__(self, source_collection)
+
+    # Accessor methods
     def count(self, item):
         return 1 if item in self else 0
-    # Mutator methods
 
+    # Mutator methods
     def add(self, item):
         """
         Add an item to self.
         """
         # Grow if the array is full
         if item not in self:
-            self.items.add(item)
-            self.size += 1
+            TreeSortedBag.add(self, item)
