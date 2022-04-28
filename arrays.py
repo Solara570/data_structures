@@ -67,7 +67,7 @@ class Array(object):
 
     def pop(self, k):
         if k < 0 or k >= self.size():
-            raise IndexError(f"Array pop index {index} out of range.")
+            raise IndexError(f"Array pop index {k} out of range.")
         data = self.items[k]
         for ind in range(k, self.size()):
             self.items[ind] = self.items[ind + 1]
