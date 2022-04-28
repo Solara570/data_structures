@@ -16,7 +16,7 @@ class ArrayBag(AbstractBag):
         Sets the initial state of self, which includes the
         contents of source_collection, if it's present.
         """
-        self.items = Array(ArrayBag.DEFAULT_CAPACITY)
+        self.clear()
         self.target_index = -1
         AbstractBag.__init__(self, source_collection)
 
@@ -99,10 +99,12 @@ class ArraySortedBag(ArrayBag):
 
     # Accessor methods
     def __contains__(self, item):
+        self.target_index = -1
         left, right = 0, len(self) - 1
         while left <= right:
             mid = (left + right) // 2
             if self.items[mid] == item:
+                self.target_index = mid
                 return True
             elif self.items[mid] > item:
                 right = mid - 1
@@ -138,19 +140,20 @@ class ArraySortedBag(ArrayBag):
         if self.is_empty() or item > self.items[len(self) - 1]:
             ArrayBag.add(self, item)
         # Regular cases: find the index and then add the item
-        left, right = 0, len(self) - 1
-        target_index = left
-        while left <= right:
-            mid = (left + right) // 2
-            if self.items[mid] == item:
-                target_index = mid
-                break
-            elif self.items[mid] > item:
-                right = mid - 1
-            else:
-                left = mid + 1
-                target_index = left
-        for index in range(len(self) - 1, target_index - 1, -1):
-            self.items[index + 1] = self.items[index]
-        self.items[target_index] = item
-        self.size += 1
+        else:
+            left, right = 0, len(self) - 1
+            target_index = left
+            while left <= right:
+                mid = (left + right) // 2
+                if self.items[mid] == item:
+                    target_index = mid
+                    break
+                elif self.items[mid] > item:
+                    right = mid - 1
+                else:
+                    left = mid + 1
+                    target_index = left
+            for index in range(len(self) - 1, target_index - 1, -1):
+                self.items[index + 1] = self.items[index]
+            self.items[target_index] = item
+            self.size += 1
