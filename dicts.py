@@ -1,11 +1,11 @@
 from abstract_dict import Entry, AbstractDict
-from array_list import ArrayList
+from array_list import ArraySortedList, ArrayList
 from linked_lists import AltLinkedList
 
 
-class ArrayDict(AbstractDict):
+class ArraySortedDict(AbstractDict):
     """
-    A dictionary implementation based on Array.
+    A dictionary implementation based on ArraySortedList.
     """
 
     # Constructor
@@ -17,7 +17,6 @@ class ArrayDict(AbstractDict):
     def __iter__(self):
         """
         Supports iteration over a view of self.
-        Visits items from bottom to top of the stack.
         """
         cursor = 0
         while cursor < len(self):
@@ -39,11 +38,16 @@ class ArrayDict(AbstractDict):
         """
         Helper method for finding the index of key.
         """
-        cursor = 0
-        while cursor < len(self):
-            if key == self.items[cursor].key:
-                return cursor
-            cursor += 1
+        left = 0
+        right = len(self) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if key == self.items[mid].key:
+                return mid
+            elif key > self.items[mid].key:
+                left = mid + 1
+            else:
+                right = mid - 1
         return -1
 
     # Mutators
@@ -51,7 +55,7 @@ class ArrayDict(AbstractDict):
         """
         Makes self become empty.
         """
-        self.items = ArrayList()
+        self.items = ArraySortedList()
         self.size = 0
 
     def __setitem__(self, key, value):
@@ -80,6 +84,38 @@ class ArrayDict(AbstractDict):
         return entry.value
 
 
+class ArrayDict(ArraySortedDict):
+    """
+    A dictionary implementation based on ArrayList.
+    Inherent most methods from ArraySortedDict.
+    """
+
+    # Constructor
+    def __init__(self, keys=None, values=None):
+        self.clear()
+        AbstractDict.__init__(self, keys, values)
+
+    # Accessors
+    def get_index(self, key):
+        """
+        Helper method for finding the index of key.
+        """
+        cursor = 0
+        while cursor < len(self):
+            if key == self.items[cursor].key:
+                return cursor
+            cursor += 1
+        return -1
+
+    # Mutators
+    def clear(self):
+        """
+        Makes self become empty.
+        """
+        self.items = ArrayList()
+        self.size = 0
+
+
 class LinkedDict(AbstractDict):
     """
     A dictionary implementation based on linked list.
@@ -94,7 +130,6 @@ class LinkedDict(AbstractDict):
     def __iter__(self):
         """
         Supports iteration over a view of self.
-        Visits items from bottom to top of the stack.
         """
         probe = self.items.head.next
         while probe is not self.items.head:
