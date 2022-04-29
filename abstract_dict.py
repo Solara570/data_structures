@@ -12,7 +12,7 @@ class Entry(object):
         self.value = value
 
     def __str__(self):
-        return f"{self.key} : {self.value}"
+        return f"{self.key}: {self.value}"
 
     def __eq__(self, other):
         if self is other:

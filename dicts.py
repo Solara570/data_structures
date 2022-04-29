@@ -1,6 +1,8 @@
 from abstract_dict import Entry, AbstractDict
+from arrays import Array
 from array_list import ArraySortedList, ArrayList
 from linked_lists import AltLinkedList
+from nodes import Node
 
 
 class ArraySortedDict(AbstractDict):
@@ -203,3 +205,120 @@ class LinkedDict(AbstractDict):
         entry = self.items.pop(index)
         self.size -= 1
         return entry.value
+
+
+class HashDict(AbstractDict):
+    """
+    A dictionary implementation based on hashing
+    with bucket/chaining to resolve collisions.
+    """
+
+    # Class Variable
+    DEFAULT_CAPACITY = 29
+
+    # Constructor
+    def __init__(self, keys=None, values=None, capacity=None):
+        self.capacity = HashDict.DEFAULT_CAPACITY if capacity is None else capacity
+        self.array = Array(self.capacity)
+        self.found_node = self.prior_node = None
+        self.index = -1
+        AbstractDict.__init__(self, keys, values)
+
+    # Accessors
+    def __contains__(self, key):
+        """
+        Returns True if key is in self, or False otherwise.
+        """
+        self.index = abs(hash(key)) % len(self.array)
+        self.prior_node = None
+        self.found_node = self.array[self.index]
+        while self.found_node is not None:
+            if key == self.found_node.data.key:
+                return True
+            self.prior_node = self.found_node
+            self.found_node = self.found_node.next
+        return False
+
+    def __iter__(self):
+        """
+        Supports iteration over a view of self.
+        """
+        for index in range(len(self.array)):
+            node = self.array[index]
+            while node is not None:
+                yield node.data.key
+                node = node.next
+
+    def __getitem__(self, key):
+        """
+        Returns the value associated with key.
+        Precondition: The key is in self.
+        Raises KeyError if the key is not in self.
+        """
+        if key in self:
+            return self.found_node.data.value
+        else:
+            raise KeyError(f"Missing key: {key}")
+
+    def load_factor(self):
+        """
+        Returns the load factor of self.
+        """
+        return self.size / self.capacity
+
+    # Mutators
+    def clear(self):
+        self.array = Array(self.capacity)
+        self.found_node = self.prior_node = None
+        self.index = -1
+        self.size = 0
+
+    def __setitem__(self, key, value):
+        """
+        If the key is not in self, add a new entry with the key and value.
+        Otherwise, replace the old value of key with the new value.
+        Rehash the dict if the load factor is over 0.5.
+        """
+        if key in self:
+            self.found_node.data.value = value
+        else:
+            new_node = Node(Entry(key, value), self.array[self.index])
+            self.array[self.index] = new_node
+            self.size += 1
+        while self.load_factor() > 0.5:
+            self.rehash()
+
+    def pop(self, key):
+        """
+        Removes the key and returns the value associated with key.
+        Precondition: The key is in self.
+        Raises KeyError if the key is not in self.
+        """
+        if key in self:
+            value = self.found_node.data.value
+            if self.prior_node is None:
+                self.array[self.index] = None
+            else:
+                self.prior_node.next = self.found_node.next
+            self.size -= 1
+            return value
+        else:
+            raise KeyError(f"Missing key: {key}")
+
+    def rehash(self):
+        """
+        Increases the capacity by 2 and reload all entries.
+        """
+        # Extract all entries
+        entries = []
+        for index in range(len(self.array)):
+            node = self.array[index]
+            while node is not None:
+                entries.append(node.data)
+                node = node.next
+        # Increase capacity and clear self.
+        self.capacity *= 2
+        self.clear()
+        # Add entries back to self.
+        for entry in entries:
+            self[entry.key] = entry.value
