@@ -43,6 +43,22 @@ class TreeSortedSet(AbstractSet, TreeSortedBag):
     def count(self, item):
         return 1 if item in self else 0
 
+    def __eq__(self, other):
+        """
+        Returns true if the contents in self equals the contents in other,
+        or False otherwise.
+        """
+        if self is other:
+            return True
+        if type(self) != type(other):
+            return False
+        if len(self) != len(other):
+            return False
+        for item in other:
+            if item not in self:
+                return False
+        return True
+
     # Mutator methods
     def add(self, item):
         """
