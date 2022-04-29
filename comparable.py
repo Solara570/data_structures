@@ -17,8 +17,14 @@ class Comparable(object):
     def __lt__(self, other):
         return self.priority < other.priority
 
+    def __le__(self, other):
+        return self.priority <= other.priority
+
     def __gt__(self, other):
         return self.priority > other.priority
+
+    def __ge__(self, other):
+        return self.priority >= other.priority
 
     def get_data(self):
         return self.data
