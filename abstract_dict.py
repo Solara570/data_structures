@@ -90,6 +90,12 @@ class AbstractDict(AbstractCollection):
         """
         return self[key] if key in self else default_value
 
+    def unzip(self):
+        """
+        Returns a tuple containing the keys and values in self.
+        """
+        return (list(self.keys()), list(self.values()))
+
     # Mutators
     def __add__(self, other):
         """
