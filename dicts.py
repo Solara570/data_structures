@@ -2,6 +2,7 @@ from abstract_dict import Entry, AbstractDict
 from arrays import Array
 from array_list import ArraySortedList, ArrayList
 from linked_lists import AltLinkedList
+from linked_bst import LinkedBST
 from nodes import Node
 
 
@@ -322,3 +323,65 @@ class HashDict(AbstractDict):
         # Add entries back to self.
         for entry in entries:
             self[entry.key] = entry.value
+
+
+class TreeSortedDict(AbstractDict):
+    """
+    A dictionary implementation based on linked BST.
+    Inherent most methods from TreeSortedBag.
+    Inherent set-specific methods from AbstractSet.
+    """
+
+    # Constructor
+    def __init__(self, keys=None, values=None):
+        self.clear()
+        AbstractDict.__init__(self, keys, values)
+
+    # Accessor methods
+    def __contains__(self, key):
+        # Create a probe entry for easy checking
+        item = Entry(key, None)
+        return item in self.items
+
+    def __iter__(self):
+        """
+        Supports iteration over a view of self.
+        """
+        return iter(map(lambda node: node.key, self.items.inorder()))
+
+    def __getitem__(self, key):
+        """
+        Returns the value associated with key.
+        Precondition: The key is in self.
+        Raises KeyError if the key is not in self.
+        """
+        entry = Entry(key, None)
+        if entry not in self.items:
+            raise KeyError(f"Missing key: {key}")
+        return self.items.find(entry).value
+
+    # Mutator methods
+    def clear(self):
+        self.items = LinkedBST()
+        self.size = 0
+
+    def __setitem__(self, key, value):
+        entry = Entry(key, value)
+        if key in self:
+            self.items.replace(entry, entry)
+        else:
+            self.items.add(entry)
+            self.size += 1
+
+    def pop(self, key):
+        """
+        Removes the key and returns the value associated with key.
+        Precondition: The key is in self.
+        Raises KeyError if the key is not in self.
+        """
+        if key not in self:
+            raise KeyError(f"Missing key: {key}")
+        else:
+            value = self.items.remove(Entry(key, None))
+            self.size -= 1
+            return value
