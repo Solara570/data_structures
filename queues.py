@@ -251,7 +251,7 @@ class HeapPriorityQueue(AbstractCollection):
     """
     A priority queue implementation based on heap.
     """
-    pass
+
     # Constructor
     def __init__(self, source_collection=None):
         self.clear()
